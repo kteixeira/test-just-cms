@@ -1,0 +1,25 @@
+{
+  "name": "kteixeira/test-just-cms",
+  "description": "Teste em PHP para o processo seletivo na Just Digital",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+      {
+          "name": "Kaio Teixeira",
+          "email": "kaio.teco@gmail.com"
+      }
+  ],
+  "require": {
+    "php": ">=5.6.4",
+    "bramus/router": "~1.2"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~4.0",
+    "xethron/migrations-generator": "^2.0"
+  },
+  "autoload": {
+      "psr-4": {
+          "test-just-cms\\": "src/"
+      }
+  }
+}
