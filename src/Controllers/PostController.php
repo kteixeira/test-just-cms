@@ -18,12 +18,16 @@ class PostController
     public function create($post)
     {
         if(!isset($post['title']) || is_null($post['title']))
-            return response(['error' => 'true', 'message' => 'The field Title is required']);
+            return response(['error' => 'true', 'message' => 'The field Title is required'], 400);
 
         if((!isset($post['path']) || is_null($post['path'])))
-            return response(['error' => 'true', 'message' => 'The field Path is required']);
+            return response(['error' => 'true', 'message' => 'The field Path is required'], 400);
 
-        return response(Posts::create($post));
+        try {
+            return response(Posts::create($post), 201);
+        } catch (\Exception $e) {
+            return response('Bad Request', 400);
+        }
     }
 
     /**
@@ -33,7 +37,11 @@ class PostController
      */
     public function update($id, $post)
     {
-        return response(Posts::update($id, $post));
+        try {
+            return response(Posts::update($id, $post), 200);
+        } catch (\Exception $e) {
+            return response('Bad Request', 400);
+        }
     }
 
     /**
@@ -42,7 +50,11 @@ class PostController
      */
     public function delete($id)
     {
-        return response(Posts::delete($id));
+        try {
+            return response(Posts::delete($id), 200);
+        } catch (\Exception $e) {
+            return response('Bad Request', 400);
+        }
     }
 
     /**
@@ -51,7 +63,11 @@ class PostController
      */
     public function find($id)
     {
-        return response(Posts::find($id));
+        try {
+            return response(Posts::find($id), 200);
+        } catch (\Exception $e) {
+            return response('Bad Request', 400);
+        }
     }
 
     /**
@@ -59,6 +75,10 @@ class PostController
      */
     public function findAll()
     {
-        return response(Posts::findAll());
+        try {
+            return response(Posts::findAll(), 200);
+        } catch (\Exception $e) {
+            return response('Bad Request', 400);
+        }
     }
 }

@@ -48,14 +48,14 @@ class JWTWrapper
     public static function getToken($data)
     {
         $issuedAt = time();
-        $expire = $issuedAt + 1200;
+        $expire = $issuedAt + 3600;
 
         $applicationController = new ApplicationController();
         $application = $applicationController->auth($data);
 
         if(is_null($application))
             return response(['error' => 'true',
-                'message' => 'Login inválido']);
+                'message' => 'Login inválido'], 400);
 
         if($application->expire_token <= time())
             $application::update($application->id, ['key' => self::keyGenerator(), 'expire_token' => $expire]);
@@ -69,7 +69,7 @@ class JWTWrapper
             ]
         ], $issuedAt, $application->expire_token, $application->key);
 
-        return response(['error' => false, 'access_token' => $jwt]);
+        return response(['error' => false, 'access_token' => $jwt], 200);
     }
 
     /**
@@ -80,7 +80,7 @@ class JWTWrapper
     {
         if(!isset($headers['access_token']) || is_null($headers['access_token']))
         {
-            return response(['error' => 'true', 'message' => 'Token não informado.']);
+            return response(['error' => 'true', 'message' => 'Token não informado.'], 400);
         }
 
         $decoded = base64_decode($headers['access_token']);
@@ -89,7 +89,7 @@ class JWTWrapper
         try {
             self::decode($headers['access_token'], $secretKey);
         } catch (\Exception $e){
-            return response(['error' => 'true', 'message' => 'Acesso não autorizado.']);
+            return response(['error' => 'true', 'message' => 'Acesso não autorizado.'], 401);
         }
     }
 

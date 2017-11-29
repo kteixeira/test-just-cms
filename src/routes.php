@@ -50,7 +50,7 @@ $router->mount('/posts', function() use ($router)
 });
 
 //Middleware responsável por fazer a validação do Token
-$router->before('GET|POST|PUT|DELETE', '/posts/.*', function()
+$router->before('GET|POST|PUT|DELETE', '/posts.*', function()
 {
     $headers = getallheaders();
     \TestJustCms\JWTWrapper::validateToken($headers);
