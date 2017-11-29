@@ -4,59 +4,92 @@ namespace TestJustCms\Models;
 
 class Posts extends Model
 {
-    private $title;
-    private $body;
-    private $path;
-    private $created_at;
-    private $updated_at;
+    protected  $fillable = [
+        'id',
+        'title',
+        'body',
+        'path',
+        'created_at',
+        'updated_at'
+    ];
 
-    function getTitle()
+    /**
+     * @return mixed
+     */
+    public function getTitle()
     {
         return $this->title;
     }
 
-    function getBody()
+    /**
+     * @return mixed
+     */
+    public function getBody()
     {
         return $this->body;
     }
 
-    function getPath()
+    /**
+     * @return mixed
+     */
+    public function getPath()
     {
         return $this->path;
     }
 
-    function getCreatedAt()
+    /**
+     * @return mixed
+     */
+    public function getCreatedAt()
     {
         return $this->created_at;
     }
 
-    function getUpdatedAt()
+    /**
+     * @return mixed
+     */
+    public function getUpdatedAt()
     {
         return $this->updated_at;
     }
 
-    function setTitle($title)
+    /**
+     * @param $title
+     */
+    public function setTitle($title)
     {
-        $this->title = $title;
+        $this->title = substr($title, 0, 120);
     }
 
-    function setBody($body)
+    /**
+     * @param $body
+     */
+    public function setBody($body)
     {
         $this->body = $body;
     }
 
-    function setPath($path)
+    /**
+     * @param $path
+     */
+    public function setPath($path)
     {
-        $this->path = $path;
+        $this->path = substr($path, 0, 170);
     }
 
-    function setCreatedAt($created_at)
+    /**
+     * @param $created_at
+     */
+    public function setCreatedAt($created_at)
     {
-        $this->created_at = $created_at;
+        $this->created_at = is_null($created_at)? date("Y-m-d H:i:s"): $created_at;
     }
 
-    function setUpdatedAt($updated_at)
+    /**
+     * @param $updated_at
+     */
+    public function setUpdatedAt($updated_at)
     {
-        $this->updated_at = $updated_at;
+        $this->updated_at = is_null($updated_at)? date("Y-m-d H:i:s"): $updated_at;
     }
 }
