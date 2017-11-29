@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Classe de conexão com o banco de dados.
+ *
+ * @author     Kaio Teixeira
+ */
+
 namespace Configs;
 require_once 'database.php';
 
@@ -8,6 +14,7 @@ class Connection
     private static $instance;
 
     /**
+     * Método cria a intância do PDO para acesso ao banco
      * @return \PDO
      */
     public static function getInstance()
@@ -30,6 +37,7 @@ class Connection
     }
 
     /**
+     * Método que prepara a instância do PDO com um comando SQL
      * @param $command
      * @return \PDOStatement
      */
@@ -39,6 +47,7 @@ class Connection
     }
 
     /**
+     * Método de abstração do método lastInsertId do PDO
      * @return string
      */
     public static function lastInsertId()

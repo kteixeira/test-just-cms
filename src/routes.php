@@ -2,13 +2,16 @@
 
 $router = new \Bramus\Router\Router();
 
+//Rota de autenticação
 $router->match('POST', '/auth', function(){
     $data = json_decode(file_get_contents('php://input'), true);
     \TestJustCms\JWTWrapper::getToken($data);
 });
 
+//Grupo de rotas para os métodos de Posts
 $router->mount('/posts', function() use ($router)
 {
+    //Rota responsável pela criaçãod de posts
     $router->match('POST', '/create', function()
     {
         $data = json_decode(file_get_contents('php://input'), true);
@@ -22,7 +25,9 @@ $router->mount('/posts', function() use ($router)
         $PostController->create($data['post']);
     });
 
-    $router->put('/update/(\d+)', function($id){
+    //Rota responsável pela edição de posts
+    $router->put('/update/(\d+)', function($id)
+    {
         $data = json_decode(file_get_contents('php://input'), true);
 
         if(!isset($data['post'])){
@@ -34,13 +39,17 @@ $router->mount('/posts', function() use ($router)
         $PostController->update($id, $data['post']);
     });
 
+    //Rota que fará a busca de todos os posts
     $router->get('/list', '\TestJustCms\Controllers\PostController@findAll');
 
+    //Rota que fará a busca de um post específico
     $router->get('/find/(\d+)', '\TestJustCms\Controllers\PostController@find');
 
+    //Rota que fará a busca de um post específico
     $router->delete('/delete/(\d+)', '\TestJustCms\Controllers\PostController@delete');
 });
 
+//Middleware responsável por fazer a validação do Token
 $router->before('GET|POST|PUT|DELETE', '/posts/.*', function()
 {
     $headers = getallheaders();

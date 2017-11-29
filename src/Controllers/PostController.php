@@ -1,22 +1,33 @@
 <?php
 
+/**
+ * Application Controller.
+ *
+ * @author     Kaio Teixeira
+ */
+
 namespace TestJustCms\Controllers;
 use TestJustCms\Models\Posts;
 
 class PostController
 {
     /**
+     * Método responsável pela criação de um novo post
      * @param $post
      */
     public function create($post)
     {
-        if((!isset($post['title']) || is_null($post['title'])) || (!isset($post['path']) || is_null($post['path'])))
-            return response(['error' => 'true', 'message' => 'The title and path values are required']);
+        if(!isset($post['title']) || is_null($post['title']))
+            return response(['error' => 'true', 'message' => 'The field Title is required']);
+
+        if((!isset($post['path']) || is_null($post['path'])))
+            return response(['error' => 'true', 'message' => 'The field Path is required']);
 
         return response(Posts::create($post));
     }
 
     /**
+     * Método responsável pela edição de posts
      * @param $id
      * @param $post
      */
@@ -26,6 +37,7 @@ class PostController
     }
 
     /**
+     * Método responsável por deletar Posts
      * @param $id
      */
     public function delete($id)
@@ -34,6 +46,7 @@ class PostController
     }
 
     /**
+     * Método responsável por retornar um Post específico
      * @param $id
      */
     public function find($id)
@@ -42,7 +55,7 @@ class PostController
     }
 
     /**
-     *
+     * Método responspável por retornar todos os Posts
      */
     public function findAll()
     {

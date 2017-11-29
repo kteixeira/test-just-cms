@@ -41,6 +41,10 @@ class JWTWrapper
         return JWT::decode($jwt, $key, ['HS256']);
     }
 
+    /**
+     * Autenticação para a busca do Token
+     * @param $data
+     */
     public static function getToken($data)
     {
         $issuedAt = time();
@@ -69,6 +73,7 @@ class JWTWrapper
     }
 
     /**
+     * Validação do Token inserido
      * @param $headers
      */
     public static function validateToken($headers)
@@ -89,6 +94,7 @@ class JWTWrapper
     }
 
     /**
+     * Gerador de chaves randômicas
      * @return bool|string
      */
     private static function keyGenerator()

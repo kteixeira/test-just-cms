@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Model Base.
+ *
+ * @author     Kaio Teixeira
+ */
+
 namespace TestJustCms\Models;
 use Configs\Connection;
 
@@ -9,8 +15,6 @@ class Model
      * @var \PDOStatement | Connection
      */
     private   $query;
-    protected $getters;
-    protected $table = null;
     protected $fillable = [];
     private   $data = [];
     protected $where = null;
@@ -27,6 +31,7 @@ class Model
     }
 
     /**
+     * Chamada para os métodos estáticos que irão executar funções na Model
      * @param $name
      * @param $arguments
      * @return mixed
@@ -48,6 +53,7 @@ class Model
     }
 
     /**
+     * Chamada dos métodos literais para execução de funções no Model
      * @param $name
      * @param $arguments
      * @return bool|Model
@@ -63,6 +69,7 @@ class Model
     }
 
     /**
+     * Método mágico para a leitura de propriedades inacessíveis
      * @param $name
      * @return mixed
      */
@@ -72,6 +79,7 @@ class Model
     }
 
     /**
+     * Método mágico executado ao escrever dados em propriedades inacessíveis
      * @param $name
      * @param $value
      */
@@ -82,6 +90,7 @@ class Model
     }
 
     /**
+     * Método que responsável por carregar os atributos e valores do objeto
      * @param $data
      */
     protected function bindData($data)
@@ -91,18 +100,22 @@ class Model
     }
 
     /**
+     * Método responsável por fazer o incremento de valores para a query
      * @param array $data
      */
     protected function bindQuery($data = [])
     {
+        //Os valores de $this->data são incrementados com o método bindValue do PDOStatement
         foreach ($this->data as $key => $value)
             $this->query->bindValue($key, $value);
 
+        //Os valores de $data (recebido por parâmetro) são incrementados com o método bindValue do PDOStatement
         foreach ($data as $key => $value)
             $this->query->bindValue($key, $value);
     }
 
     /**
+     * Método responsável por fazer execuções básicas para o instância de conexão com o banco de dados
      * @param $command
      * @param array $whereBind
      * @param null $pdo
@@ -120,6 +133,7 @@ class Model
     }
 
     /**
+     * Método responsável pela busca de valores
      * @param array $cols
      * @return array
      */
@@ -142,6 +156,7 @@ class Model
 
         $return = [];
 
+        //Se retorna o objeto atual
         foreach ($all as $values)
             $return[] = (new static($values));
 
@@ -149,32 +164,39 @@ class Model
     }
 
     /**
+     * Método responsável por fazer a inserção de dados
      * @return $this
      */
     public function insert()
     {
+        //O created_at é atribuido caso necessário
         if(in_array('created_at', $this->fillable))
             $this->created_at = date('Y-m-d H:i:s');
 
+        //O updated_at é atribuido caso necessário
         if(in_array('updated_at', $this->fillable))
             $this->updated_at = date('Y-m-d H:i:s');
 
         $this->execute('INSERT INTO ' . $this->getTable() . '(' . $this->getCols(). ') VALUES ( '. $this->getBind() .')', [], $pdo);
 
+        //Se busca o ultimo id através da abstração feita na classe Connection
         $this->id = $pdo->lastInsertId();
 
         return $this;
     }
 
     /**
+     * Método responsável por fazer a atualização de dados
      * @param $data
      * @return $this
      */
     public function replace($data)
     {
+        //O updated_at é atribuido caso necessário
         if(in_array('updated_at',$this->fillable))
             $this->updated_at = date('Y-m-d H:i:s');
 
+        //Atualizando o objeto
         $this->bindData($data);
 
         $this->execute('UPDATE ' . $this->getTable() . ' SET ' . $this->getSetUpdate(). ' WHERE `id` = :id');
@@ -183,6 +205,7 @@ class Model
     }
 
     /**
+     * Método responsável por deletar dados
      * @return bool
      */
     public function destroy()
@@ -191,6 +214,8 @@ class Model
     }
 
     /**
+     * Método responsável por fazer a adição de novas condições
+     * (atualmente utilizado apenas para as buscas e com algumas restrições)
      * @param $where
      * @param $bind
      * @return $this
@@ -203,6 +228,7 @@ class Model
     }
 
     /**
+     * Método responsável por fazer a adição do limite de dados em execuções
      * @param $max
      * @param null $start
      * @return $this
@@ -215,6 +241,7 @@ class Model
     }
 
     /**
+     * Método responsável por carregar os fillables
      * @return array
      */
     protected function getFillable()
@@ -223,6 +250,7 @@ class Model
     }
 
     /**
+     * Método responsável por retornar formatados os dados que serão setados no comando de Update
      * @return string
      */
     protected function getSetUpdate()
@@ -241,6 +269,8 @@ class Model
     }
 
     /**
+     * Método responsável por retornar o nome da tabela do Model carregado
+     * (obrigatório que a classe tenha o mesmo nome da tabela)
      * @return null|string
      */
     protected function getTable()
@@ -251,6 +281,7 @@ class Model
     }
 
     /**
+     * Método responsável por formatar as colunas que irão receber valores no comando Insert
      * @return string
      */
     protected function getCols()
@@ -262,6 +293,7 @@ class Model
     }
 
     /**
+     * Método responsável por formatar os valores que serão incrementados no comando Insert
      * @return string
      */
     protected function getBind()
@@ -270,6 +302,7 @@ class Model
     }
 
     /**
+     * Serialização do objeto para tratamento de retornos
      * @return array
      */
     public function jsonSerialize()
