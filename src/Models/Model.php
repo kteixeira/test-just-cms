@@ -15,6 +15,7 @@ class Model
      * @var \PDOStatement | Connection
      */
     private   $query;
+    protected $table = null;
     protected $fillable = [];
     private   $data = [];
     protected $where = null;
