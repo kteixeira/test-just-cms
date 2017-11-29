@@ -39,6 +39,8 @@ class Model
             return (new static(['id' => $arguments[0]]))->replace($arguments[1]);
         if($name == 'find')
             return (new static([]))->setWhere('id = :idwhere', ['idwhere' => $arguments[0]])->setLimit(1)->select(isset($arguments[1])? $arguments[1]: ['*']);
+        if($name == 'findByName')
+            return (new static([]))->setWhere('name = :name', ['name' => $arguments[0]])->setLimit(1)->select(isset($arguments[1])? $arguments[1]: ['*']);
         if($name == 'findAll')
             return (new static([]))->select(isset($arguments[0])?$arguments[0]:['*']);
         if($name == 'delete')
@@ -175,7 +177,7 @@ class Model
 
         $this->bindData($data);
 
-        $this->execute('UPDATE ' . $this->getTable() . ' SET ' . $this->getSetUpdate(). ' WHERE id = :id');
+        $this->execute('UPDATE ' . $this->getTable() . ' SET ' . $this->getSetUpdate(). ' WHERE `id` = :id');
 
         return $this;
     }
@@ -232,7 +234,7 @@ class Model
             if($key == 'id')
                 continue;
 
-            $setUpdate[] = $key. ' = :' . $key;
+            $setUpdate[] = '`' . $key . '`' . ' = :' . $key;
         }
 
         return implode(', ', $setUpdate);

@@ -2,9 +2,14 @@
 
 $router = new \Bramus\Router\Router();
 
+$router->match('POST', '/auth', function(){
+    $data = json_decode(file_get_contents('php://input'), true);
+    \TestJustCms\JWTWrapper::getToken($data);
+});
+
 $router->mount('/posts', function() use ($router)
 {
-    $router->match('POST', '/', function()
+    $router->match('POST', '/create', function()
     {
         $data = json_decode(file_get_contents('php://input'), true);
 
@@ -17,7 +22,7 @@ $router->mount('/posts', function() use ($router)
         $PostController->create($data['post']);
     });
 
-    $router->put('/(\d+)', function($id){
+    $router->put('/update/(\d+)', function($id){
         $data = json_decode(file_get_contents('php://input'), true);
 
         if(!isset($data['post'])){
@@ -29,11 +34,17 @@ $router->mount('/posts', function() use ($router)
         $PostController->update($id, $data['post']);
     });
 
-    $router->get('/', '\TestJustCms\Controllers\PostController@findAll');
+    $router->get('/list', '\TestJustCms\Controllers\PostController@findAll');
 
-    $router->get('/(\d+)', '\TestJustCms\Controllers\PostController@find');
+    $router->get('/find/(\d+)', '\TestJustCms\Controllers\PostController@find');
 
-    $router->delete('/(\d+)', '\TestJustCms\Controllers\PostController@delete');
+    $router->delete('/delete/(\d+)', '\TestJustCms\Controllers\PostController@delete');
+});
+
+$router->before('GET|POST|PUT|DELETE', '/posts/.*', function()
+{
+    $headers = getallheaders();
+    \TestJustCms\JWTWrapper::validateToken($headers);
 });
 
 $router->set404(function() {
